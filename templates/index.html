@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask MySQL App</title>
+</head>
+<body>
+    <h1>Welcome to the Flask MySQL App</h1>
+    <form id="userForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br><br>
+        <button type="submit">Add User</button>
+    </form>
+
+    <h2>Users</h2>
+    <ul id="userList">
+        <!-- User entries will be populated here -->
+    </ul>
+
+    <script>
+        // Fetch users and display them
+        async function fetchUsers() {
+            const response = await fetch('/users');
+            const users = await response.json();
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = `${user.name} (${user.email})`;
+                userList.appendChild(li);
+            });
+        }
+
+        // Add user on form submission
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const response = await fetch('/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email })
+            });
+
+            if (response.ok) {
+                fetchUsers();
+                document.getElementById('userForm').reset();
+            } else {
+                alert('Failed to add user');
+            }
+        });
+
+        // Initial fetch of users
+        fetchUsers();
+    </script>
+</body>
+</html>
