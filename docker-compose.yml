@@ -8,7 +8,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MYSQL_HOST=mysql_db
+      - MYSQL_HOST=mysql_db #Scipt will take the environment variable in the code.
       - MYSQL_USER=root
       - MYSQL_PASSWORD=password
       - MYSQL_DATABASE=testdb
@@ -19,10 +19,14 @@ services:
     image: mysql:8.0
     container_name: mysql_db
     ports:
-      - "3306:3306"
+      - "3307:3306" #3306 port in container is binded to 3307 port in system
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: testdb
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db-init:/docker-entrypoint-initdb.d
+
+
+volumes:
+  mysql_data: #this is needed to be here so that service can bind the volumne to the container.
